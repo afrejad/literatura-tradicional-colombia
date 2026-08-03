@@ -9,18 +9,19 @@ la tradición colombiana.
 Esta es la primera versión funcional. Incluye:
 
 - portada editorial basada en una cartografía de Colombia;
-- exploración de 2.899 fichas de metadatos por búsqueda, macro tipo, región, departamento y género;
-- fichas individuales enlazadas con sus fuentes y estados de curaduría;
+- exploración de 2.899 fichas por búsqueda, macro tipo, región, departamento y género;
+- 2.899 transcripciones del corpus, presentadas con sus saltos de línea y enlazadas con sus fuentes;
+- fichas individuales enlazadas con sus fuentes y controles documentales;
 - recorridos por regiones y géneros;
 - biblioteca con 2.239 libros y artículos, filtros, enlaces, copia de citas y descarga CSV;
 - páginas de proyecto, recursos, participación y perfil académico;
 - diseño adaptable a computador, tableta y celular;
 - metadatos, datos estructurados, `robots.txt` y `sitemap.xml`.
 
-El importador excluye 25 registros marcados para revisión manual y no publica
-ninguna transcripción. La columna `Obra Texto` permanece en el libro maestro y
-fuera de los archivos web mientras se verifican derechos, consentimiento y
-privacidad.
+El importador excluye 25 registros marcados para revisión manual. En los demás
+registros, la columna `Obra Texto` alimenta la transcripción visible de cada
+ficha. El corpus cuenta con la autorización documentada por el proyecto o con
+fuentes de dominio público, según corresponda.
 
 ## Actualizar corpus y bibliografía
 
@@ -35,7 +36,8 @@ npm run data:import -- \
 ```
 
 La importación lee `Corpus_maestro` y `Bibliografia_maestra`, valida
-identificadores y genera únicamente los campos autorizados para el portal.
+identificadores y genera los metadatos, las transcripciones y las referencias
+autorizadas para el portal.
 
 ## Abrir en VS Code
 

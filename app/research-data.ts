@@ -31,6 +31,7 @@ export type CorpusIndexItem = {
 
 export type CorpusRecord = CorpusIndexItem & {
   sourceUrl: string | null;
+  text: string | null;
   project: string | null;
   metadataStatus: string | null;
   rightsStatus: string | null;
@@ -89,4 +90,3 @@ export const researchStats = statsJson as ResearchStats;
 export function findCorpusRecord(slug: string) {
   return corpusRecords.find((record) => record.slug === slug);
 }
-

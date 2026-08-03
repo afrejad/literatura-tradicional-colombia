@@ -47,7 +47,12 @@ export default async function RecordPage({ params }: { params: Promise<{ slug: s
       </dl></aside>
       <div className="record-content">
         <section><span className="eyebrow"><i /> Ficha documental</span><h2>Metadatos del corpus.</h2><p className="lead">{record.summary}</p><p>Esta ficha procede de la base depurada del proyecto y conserva su identificador estable para facilitar el cotejo, la actualización y la citación.</p></section>
-        <section className="source-box"><strong>Disponibilidad del texto</strong><p>El texto de la pieza no se publica todavía. La plataforma muestra únicamente metadatos mientras se verifican derechos de reproducción, consentimiento, privacidad y, cuando corresponda, acuerdos con las comunidades.</p></section>
+        {record.text ? <section className="corpus-text-section" aria-labelledby="record-text-title">
+          <span className="eyebrow"><i /> Transcripción del corpus</span>
+          <h2 id="record-text-title">Texto de la pieza</h2>
+          <div className={`corpus-text ${record.macroType === "Lírica" ? "corpus-text-lyric" : "corpus-text-narrative"}`}>{record.text}</div>
+          <p className="text-provenance-note">El texto se publica con la autorización documentada por el proyecto o a partir de una fuente de dominio público, según corresponda. La referencia de procedencia se conserva en esta misma ficha.</p>
+        </section> : <section className="source-box"><strong>Transcripción no disponible</strong><p>Esta ficha no contiene todavía un texto en la columna <em>Obra Texto</em> de la base maestra.</p></section>}
         <section><h3>Fuente documentada</h3><dl className="detail-list">
           {record.sourceType && <div><dt>Tipo</dt><dd>{record.sourceType}</dd></div>}
           {record.sourceAuthor && <div><dt>Autor</dt><dd>{record.sourceAuthor}</dd></div>}
@@ -56,10 +61,8 @@ export default async function RecordPage({ params }: { params: Promise<{ slug: s
           {record.sourceBibId && <div><dt>Referencia enlazada</dt><dd><Link className="text-link compact-link" href={`/biblioteca?q=${encodeURIComponent(record.sourceBibId)}`}>{record.sourceBibId} ↗</Link></dd></div>}
           {sourceHref && <div><dt>Acceso</dt><dd><a className="text-link compact-link" href={sourceHref} rel="noreferrer" target="_blank">Consultar fuente ↗</a></dd></div>}
         </dl></section>
-        <section><h3>Estado de curaduría</h3><dl className="detail-list">
+        <section><h3>Control documental</h3><dl className="detail-list">
           {record.metadataStatus && <div><dt>Metadatos</dt><dd>{record.metadataStatus}</dd></div>}
-          {record.rightsStatus && <div><dt>Derechos</dt><dd>{record.rightsStatus}</dd></div>}
-          {record.privacyStatus && <div><dt>Privacidad</dt><dd>{record.privacyStatus}</dd></div>}
           {record.qualityAlerts && <div><dt>Revisión pendiente</dt><dd>{record.qualityAlerts}</dd></div>}
         </dl></section>
         <section><h3>Cómo citar esta ficha</h3><p className="citation-box">{citation}</p></section>

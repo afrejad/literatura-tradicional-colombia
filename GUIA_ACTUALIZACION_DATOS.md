@@ -10,7 +10,7 @@ Las hojas de cálculo depuradas son la fuente maestra. El sitio no lee directame
 Excel maestro → validación e importación → datos públicos del sitio → revisión local → publicación
 ```
 
-El importador aplica una regla de seguridad: **nunca copia a la web la columna `Obra Texto`**. En esta fase se publican metadatos, no transcripciones. Los registros marcados `No publicar automáticamente` tampoco pasan al sitio.
+El importador publica en cada ficha el contenido de la columna `Obra Texto`, conservando los saltos de línea. Los registros marcados exactamente como `No publicar automáticamente` no pasan al sitio.
 
 ## 2. Añadir una pieza al corpus
 
@@ -30,7 +30,7 @@ El importador aplica una regla de seguridad: **nunca copia a la web la columna `
    - `Estado Metadatos`, `Estado Derechos` y `Estado Privacidad`.
    - `Publicacion Web Sugerida`.
 
-5. Puede conservar el texto completo en `Obra Texto` para su trabajo académico interno; esa columna no se exporta a la página.
+5. Escriba el texto completo en `Obra Texto`. Esa columna alimenta la transcripción visible en la ficha web; deje la celda vacía si una pieza nueva aún no tiene transcripción publicable.
 6. Guarde el archivo sin cambiar el nombre de la hoja ni de las columnas.
 
 Para que los metadatos sean visibles, use una decisión editorial que autorice metadatos. Si escribe exactamente `No publicar automáticamente`, el registro permanecerá fuera del sitio.
@@ -68,7 +68,7 @@ La respuesta correcta debe mostrar cinco cifras:
 - registros originales del corpus;
 - metadatos publicados;
 - registros excluidos por revisión;
-- textos publicados, que seguirá siendo `0` mientras no exista un protocolo específico;
+- textos publicados; con la base actual debe indicar `2899`;
 - referencias bibliográficas.
 
 Si hay identificadores o slugs repetidos, columnas cambiadas o una hoja mal nombrada, la importación se detendrá y explicará el problema. No edite manualmente los archivos dentro de `app/generated`.
@@ -84,7 +84,7 @@ npm run dev
 Abra la dirección que aparece en la terminal y compruebe:
 
 1. Busque el nuevo `Corpus Id` en **Explorar**.
-2. Abra su ficha y verifique lugar, género, fuente y estados de curaduría.
+2. Abra su ficha y verifique el texto, sus saltos de línea, el lugar, el género y la fuente.
 3. Busque el nuevo `Bib Id` en **Biblioteca**.
 4. Pruebe el botón **Copiar cita** y cualquier DOI o URL.
 5. Revise también el sitio en un celular o reduzca el ancho de la ventana.
@@ -104,14 +104,13 @@ git push
 - **Restaurar:** asigne nuevamente una decisión editorial publicable y repita la importación.
 - **Evite borrar identificadores:** un `Corpus Id` o `Bib Id` publicado debe permanecer estable, incluso si se corrige el título o la clasificación.
 
-## 7. Regla para publicar textos completos
+## 7. Regla para incorporar nuevos textos completos
 
-La automatización actual publica únicamente metadatos. Para habilitar una transcripción futura debe existir evidencia de, al menos, una de estas condiciones:
+La base actual cuenta con autorización para publicar sus textos o los toma de fuentes de dominio público, según corresponda. Para una pieza futura, escriba contenido en `Obra Texto` únicamente cuando exista evidencia de al menos una de estas condiciones:
 
 - dominio público;
 - licencia abierta compatible;
 - autorización expresa del titular;
 - consentimiento y acuerdos comunitarios aplicables al trabajo de campo.
 
-Cuando se defina ese protocolo se añadirá una columna independiente, por ejemplo `Texto Web Aprobado`, para que la autorización sea explícita y auditable. No debe reutilizarse `Obra Texto` como publicación automática.
-
+Si una pieza nueva todavía no cumple estas condiciones, deje `Obra Texto` vacío o marque el registro completo como `No publicar automáticamente`. Después de documentar la autorización, añada el texto y vuelva a ejecutar la importación.

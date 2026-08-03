@@ -61,7 +61,7 @@ export function ArchiveExplorer({ initial = {}, initialResult }: { initial?: Ini
         <label>Género o forma<select onChange={(event) => { setGenre(event.target.value); setPage(1); setLoading(true); }} value={genre}><option value="todos">Todos los géneros</option>{stats.corpus.genres.map(item => <option key={item.slug} value={item.slug}>{item.value} ({item.count})</option>)}</select></label>
         <label>Región provisional<select onChange={(event) => { setRegion(event.target.value); setPage(1); setLoading(true); }} value={region}><option value="todas">Todas las regiones</option>{stats.corpus.regions.map(item => <option key={item.slug} value={item.slug}>{item.value} ({item.count})</option>)}</select></label>
         <label>Departamento<select onChange={(event) => { setDepartment(event.target.value); setPage(1); setLoading(true); }} value={department}><option value="todos">Todos los departamentos</option>{stats.corpus.departments.map(item => <option key={item.slug} value={item.slug}>{item.value} ({item.count})</option>)}</select></label>
-        <div className="filter-note"><strong>Publicación responsable</strong><p>Se muestran {stats.corpus.publishedMetadata.toLocaleString("es-CO")} fichas de metadatos. Los textos están reservados hasta verificar derechos, consentimiento y privacidad.</p></div>
+        <div className="filter-note"><strong>Corpus con texto</strong><p>Se muestran {stats.corpus.publishedMetadata.toLocaleString("es-CO")} fichas documentales y {stats.corpus.publishedTexts.toLocaleString("es-CO")} transcripciones consultables, enlazadas con sus datos de procedencia.</p></div>
       </aside>
 
       <section className="results" aria-busy={loading} aria-live="polite">

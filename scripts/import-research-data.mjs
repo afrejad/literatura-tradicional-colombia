@@ -14,7 +14,7 @@ if (!args.corpus || !args.bibliografia) {
 const corpusRows = await readWorksheet(args.corpus, "Corpus_maestro");
 const bibliographyRows = await readWorksheet(args.bibliografia, "Bibliografia_maestra");
 
-validateColumns(corpusRows, ["Corpus Id", "Slug", "Titulo", "Macro Tipo", "Publicacion Web Sugerida"], "Corpus_maestro");
+validateColumns(corpusRows, ["Corpus Id", "Slug", "Titulo", "Macro Tipo", "Obra Texto", "Publicacion Web Sugerida"], "Corpus_maestro");
 validateColumns(bibliographyRows, ["Bib Id", "Slug", "Tipo", "Autor", "Titulo"], "Bibliografia_maestra");
 
 const excludedCorpus = corpusRows.filter((row) => clean(row["Publicacion Web Sugerida"]) === "No publicar automáticamente");
@@ -49,7 +49,7 @@ console.log(JSON.stringify({
   corpusSource: corpusRows.length,
   corpusPublishedMetadata: publishableCorpus.length,
   corpusExcluded: excludedCorpus.length,
-  corpusTextsPublished: 0,
+  corpusTextsPublished: publishableCorpus.filter((record) => record.text).length,
   bibliography: bibliography.length,
   output: ["app/generated", "public/data"],
 }, null, 2));
@@ -98,6 +98,11 @@ function clean(value) {
 function nullable(value) {
   const text = clean(value);
   return text === "" || text === "-" ? null : text;
+}
+
+function corpusText(value) {
+  const text = clean(value).replace(/\r\n?/g, "\n").replace(/[ \t]+\n/g, "\n");
+  return text || null;
 }
 
 function slugify(value) {
@@ -182,6 +187,7 @@ function toCorpusRecord(row) {
     sourceTitle,
     sourceYear,
     sourceUrl: nullable(row["Fuente Url"]),
+    text: corpusText(row["Obra Texto"]),
     project: nullable(row.Proyecto),
     metadataStatus: nullable(row["Estado Metadatos"]),
     rightsStatus: nullable(row["Estado Derechos"]),
@@ -267,7 +273,7 @@ function buildStats(sourceCorpusTotal, corpus, excluded, bibliographyRows) {
       sourceTotal: sourceCorpusTotal,
       publishedMetadata: corpus.length,
       excludedPendingReview: excluded,
-      publishedTexts: 0,
+      publishedTexts: corpus.filter((record) => record.text).length,
       macroTypes: countBy(corpus, "macroType", "macroTypeSlug"),
       genres: countBy(corpus, "genre", "genreSlug"),
       regions: countBy(corpus, "region", "regionSlug"),

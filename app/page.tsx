@@ -54,7 +54,7 @@ export default function Home() {
         <div><strong>{researchStats.corpus.publishedMetadata.toLocaleString("es-CO")}</strong><span>registros del corpus con metadatos públicos</span></div>
         <div><strong>{researchStats.bibliography.total.toLocaleString("es-CO")}</strong><span>referencias bibliográficas consultables</span></div>
         <div><strong>{researchStats.corpus.departments.filter((item) => item.value !== "Sin dato" && item.value !== "Varios departamentos").length}</strong><span>departamentos representados</span></div>
-        <div><strong>0</strong><span>textos publicados sin verificación de derechos</span></div>
+        <div><strong>{researchStats.corpus.publishedTexts.toLocaleString("es-CO")}</strong><span>textos completos consultables</span></div>
       </section>
 
       <section className="section section-intro">
@@ -80,7 +80,7 @@ export default function Home() {
       </section>
 
       <section className="section library-callout"><div><span className="section-number">02</span><span className="eyebrow"><i /> Biblioteca bibliográfica</span><h2>Las fuentes detrás de las voces.</h2></div><div><p className="lead">{researchStats.bibliography.total.toLocaleString("es-CO")} libros y artículos, navegables por autor, época, título y tipo de documento, acompañan los recorridos del corpus.</p><Link className="button button-primary" href="/biblioteca">Consultar bibliografía →</Link></div></section>
-      <section className="section stewardship"><span className="eyebrow"><i /> Curaduría responsable</span><div className="stewardship-grid"><h2>Documentar también es cuidar.</h2><div><p>La plataforma ya permite consultar los metadatos depurados del corpus. Los textos permanecen reservados mientras se verifican derechos de reproducción, consentimiento, privacidad y acuerdos con las comunidades.</p><Link className="text-link" href="/participar">Contribuir al archivo ↗</Link></div></div></section>
+      <section className="section stewardship"><span className="eyebrow"><i /> Curaduría responsable</span><div className="stewardship-grid"><h2>Documentar también es cuidar.</h2><div><p>La plataforma reúne metadatos depurados y transcripciones autorizadas del corpus. Cada ficha conserva su procedencia, su identificación estable y las observaciones documentales necesarias para reconocer las fuentes y las voces.</p><Link className="text-link" href="/participar">Contribuir al archivo ↗</Link></div></div></section>
     </main>
   );
 }

@@ -35,13 +35,15 @@ test("renders the imported corpus and bibliography totals", async () => {
   assert.match(html, /2\.239/);
 });
 
-test("renders a real corpus record without publishing its transcription", async () => {
+test("renders the transcription of a real corpus record", async () => {
   const worker = await loadWorker();
   const response = await render(worker, "/archivo/quien-hizo-las-mujeres-y-los-animales-feos-cltc-0305-n");
   const html = await response.text();
   assert.equal(response.status, 200);
   assert.match(html, /Quién hizo las mujeres y los animales feos/);
-  assert.match(html, /El texto de la pieza no se publica todavía/);
+  assert.match(html, /Texto de la pieza/);
+  assert.match(html, /Toda mujer bonita es hija de Eva/);
+  assert.doesNotMatch(html, /El texto de la pieza no se publica todavía/);
 });
 
 test("pre-filters bibliography searches from the URL", async () => {
