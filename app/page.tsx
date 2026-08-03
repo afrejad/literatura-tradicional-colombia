@@ -20,8 +20,8 @@ export default function Home() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
       <section className="hero" aria-labelledby="hero-title">
         <div className="hero-copy">
-          <span className="eyebrow"><i /> Archivo digital colombiano</span>
-          <h1 id="hero-title">La memoria narrada de Colombia</h1>
+          <span className="eyebrow"><i /> Archivo digital de la literatura tradicional colombiana</span>
+          <h1 id="hero-title">La memoria tradicional de Colombia</h1>
           <p className="hero-summary">Un archivo vivo de mitos, leyendas, cuentos, coplas, décimas y otras formas que las comunidades reciben, recrean y transmiten.</p>
           <div className="button-row">
             <Link className="button button-primary" href="/explorar">Explorar el archivo <span aria-hidden="true">→</span></Link>
