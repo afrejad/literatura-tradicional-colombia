@@ -39,7 +39,9 @@ export default async function RecordPage({ params }: { params: Promise<{ slug: s
         <div><dt>Macro tipo</dt><dd>{record.macroType}</dd></div>
         <div><dt>Género o forma</dt><dd>{record.genre}</dd></div>
         {record.genreOriginal && <div><dt>Clasificación original</dt><dd>{record.genreOriginal}</dd></div>}
-        <div><dt>Región provisional</dt><dd>{record.region}</dd></div>
+        <div><dt>Región del corpus</dt><dd><Link className="text-link compact-link" href={`/explorar?region=${record.regionSlug}`}>{record.region}</Link></dd></div>
+        <div><dt>Criterio regional</dt><dd>{record.regionCriterion}</dd></div>
+        {record.specialZones.length > 0 && <div><dt>Zona especial</dt><dd>{record.specialZones.join("; ")}</dd></div>}
         <div><dt>Departamento</dt><dd>{record.department}</dd></div>
         {record.locality && <div><dt>Municipio o localidad</dt><dd>{record.locality}</dd></div>}
         {record.year && <div><dt>Año de recolección</dt><dd>{record.year}</dd></div>}

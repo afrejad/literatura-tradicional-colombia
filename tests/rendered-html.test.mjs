@@ -31,8 +31,20 @@ test("renders the imported corpus and bibliography totals", async () => {
   const response = await render(worker, "/");
   const html = await response.text();
   assert.equal(response.status, 200);
-  assert.match(html, /2\.899/);
+  assert.match(html, /2\.924/);
   assert.match(html, /2\.239/);
+});
+
+test("renders the doctoral system of nine regions", async () => {
+  const worker = await loadWorker();
+  const response = await render(worker, "/regiones");
+  const html = await response.text();
+  assert.equal(response.status, 200);
+  for (const region of ["Caribe", "Pacífico", "Cafetera", "Cordillera Oriental", "Tolima Grande", "Llanos Orientales", "Amazonía", "Caucana-Valluna", "Nudo de los Pastos"]) {
+    assert.match(html, new RegExp(region));
+  }
+  assert.match(html, /investigación doctoral/);
+  assert.doesNotMatch(html, /Región provisional/);
 });
 
 test("renders the transcription of a real corpus record", async () => {

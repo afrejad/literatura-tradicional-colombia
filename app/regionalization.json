@@ -1,0 +1,156 @@
+{
+  "method": {
+    "title": "Sistema regional del corpus",
+    "author": "Adrián Farid Freja de la Hoz",
+    "origin": "Propuesta de regionalización elaborada en el desarrollo de su investigación doctoral.",
+    "principle": "Las regiones se entienden como sistemas culturales y territoriales de circulación, no como una copia de la división administrativa ni de las regionalizaciones convencionales de Colombia.",
+    "interregionalLabel": "Varias regiones",
+    "unresolvedLabel": "Sin región determinada"
+  },
+  "regions": [
+    {
+      "slug": "caribe",
+      "name": "Caribe",
+      "note": "Litorales, archipiélagos, sabanas, ciénagas y corredores de intercambio del norte colombiano.",
+      "dominantDepartments": ["Guajira", "Cesar", "Magdalena", "Atlántico", "Bolívar", "Sucre", "Córdoba", "San Andrés, Providencia y Santa Catalina"],
+      "departmentFragments": ["Antioquia", "Chocó"],
+      "internalZones": ["Palenque", "Archipiélago de San Andrés, Providencia y Santa Catalina", "Zonas indígenas de la Sierra Nevada y La Guajira"],
+      "frontierZones": ["Península de La Guajira", "Golfo de Urabá"],
+      "areaKm2": 156437
+    },
+    {
+      "slug": "pacifico",
+      "name": "Pacífico",
+      "note": "Litoral húmedo, cuencas fluviales y territorios costeros afrodescendientes e indígenas.",
+      "dominantDepartments": ["Chocó"],
+      "departmentFragments": ["Valle del Cauca", "Cauca", "Nariño"],
+      "internalZones": ["Zonas indígenas"],
+      "frontierZones": ["Bahía Solano", "Tumaco"],
+      "areaKm2": 65113
+    },
+    {
+      "slug": "cafetera",
+      "name": "Cafetera",
+      "note": "Montañas y valles articulados por poblamientos, economías y repertorios culturales cafeteros.",
+      "dominantDepartments": ["Antioquia", "Caldas", "Risaralda", "Quindío"],
+      "departmentFragments": ["Chocó", "Valle del Cauca"],
+      "internalZones": ["Zonas indígenas"],
+      "frontierZones": ["Caucasia"],
+      "areaKm2": 70488
+    },
+    {
+      "slug": "cordillera-oriental",
+      "name": "Cordillera Oriental",
+      "note": "Altiplanos, vertientes, valles y corredores culturales del sistema montañoso oriental.",
+      "dominantDepartments": ["Cundinamarca", "Boyacá", "Santander", "Norte de Santander"],
+      "departmentFragments": ["Cesar"],
+      "internalZones": ["Zonas indígenas"],
+      "frontierZones": ["Magdalena Medio", "Miraflores", "Barrancabermeja"],
+      "areaKm2": 98062
+    },
+    {
+      "slug": "tolima-grande",
+      "name": "Tolima Grande",
+      "note": "Valles, montañas y cuencas históricamente vinculados en los actuales Tolima y Huila.",
+      "dominantDepartments": ["Tolima", "Huila"],
+      "departmentFragments": ["Caquetá"],
+      "internalZones": ["Zonas indígenas"],
+      "frontierZones": ["Florencia"],
+      "areaKm2": 46806
+    },
+    {
+      "slug": "llanos-orientales",
+      "name": "Llanos Orientales",
+      "note": "Sabanas, hatos, caminos y grandes ríos del sistema cultural llanero.",
+      "dominantDepartments": ["Arauca", "Casanare", "Meta", "Vichada"],
+      "departmentFragments": ["Guainía"],
+      "internalZones": ["Zonas indígenas"],
+      "frontierZones": ["San José del Guaviare"],
+      "areaKm2": 255951
+    },
+    {
+      "slug": "amazonia",
+      "name": "Amazonía",
+      "note": "Bosques, ríos y territorios ancestrales articulados por redes amazónicas de larga duración.",
+      "dominantDepartments": ["Amazonas", "Caquetá", "Guainía", "Guaviare", "Putumayo", "Vaupés"],
+      "departmentFragments": ["Meta", "Vichada"],
+      "internalZones": ["Zonas indígenas"],
+      "frontierZones": ["Leticia"],
+      "areaKm2": 384441
+    },
+    {
+      "slug": "caucana-valluna",
+      "name": "Caucana-Valluna",
+      "note": "Valles interandinos, macizos y corredores culturales del Cauca y el Valle del Cauca.",
+      "dominantDepartments": ["Valle del Cauca", "Cauca"],
+      "departmentFragments": ["Huila"],
+      "internalZones": ["Zonas indígenas"],
+      "frontierZones": ["Cali"],
+      "areaKm2": 43320
+    },
+    {
+      "slug": "nudo-de-los-pastos",
+      "name": "Nudo de los Pastos",
+      "note": "Altiplanos, montañas y corredores fronterizos del sur andino colombiano.",
+      "dominantDepartments": ["Nariño"],
+      "departmentFragments": ["Putumayo"],
+      "internalZones": ["Zonas indígenas"],
+      "frontierZones": ["Ipiales"],
+      "areaKm2": 31853
+    }
+  ],
+  "municipalityOverrides": [
+    {
+      "department": "Cauca",
+      "localities": ["Guapi", "Timbiquí", "López", "López de Micay"],
+      "region": "Pacífico",
+      "criterion": "Fragmento costero del departamento del Cauca"
+    },
+    {
+      "department": "Nariño",
+      "localities": ["Barbacoas", "Tumaco", "La Tola", "El Charco", "Santa Bárbara (Iscuandé)"],
+      "region": "Pacífico",
+      "criterion": "Fragmento pacífico del departamento de Nariño"
+    },
+    {
+      "department": "Valle del Cauca",
+      "localities": ["Buenaventura"],
+      "region": "Pacífico",
+      "criterion": "Fragmento pacífico del departamento del Valle del Cauca"
+    },
+    {
+      "department": "Huila",
+      "localities": ["San Agustín", "Palestina"],
+      "region": "Caucana-Valluna",
+      "criterion": "Fragmento suroccidental del Huila vinculado al sistema Caucana-Valluna"
+    },
+    {
+      "department": "Cesar",
+      "localities": ["Río de Oro"],
+      "region": "Cordillera Oriental",
+      "criterion": "Fragmento del Cesar vinculado al sistema de la Cordillera Oriental"
+    },
+    {
+      "department": "Caquetá",
+      "localities": ["Florencia"],
+      "region": "Tolima Grande",
+      "criterion": "Zona especial de frontera de Florencia"
+    },
+    {
+      "department": "",
+      "localities": ["El Carmen de Bolívar"],
+      "region": "Caribe",
+      "criterion": "Municipio explícito con departamento ausente en la fuente"
+    }
+  ],
+  "specialZoneMatches": [
+    { "localities": ["San Basilio de Palenque"], "zone": "Palenque" },
+    { "localities": ["San Andrés"], "zone": "Archipiélago de San Andrés, Providencia y Santa Catalina" },
+    { "localities": ["Atánquez, Resguardo Indígena Kankuamo"], "zone": "Zonas indígenas de la Sierra Nevada y La Guajira" },
+    { "localities": ["Uribia", "Uribía"], "zone": "Península de La Guajira" },
+    { "localities": ["Bahía Solano", "El Valle, Bahía Solano"], "zone": "Bahía Solano" },
+    { "localities": ["Tumaco"], "zone": "Tumaco" },
+    { "localities": ["Florencia"], "zone": "Florencia" },
+    { "localities": ["Ipiales"], "zone": "Ipiales" }
+  ]
+}

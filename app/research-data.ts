@@ -30,6 +30,8 @@ export type CorpusIndexItem = {
 };
 
 export type CorpusRecord = CorpusIndexItem & {
+  regionCriterion: string;
+  specialZones: string[];
   sourceUrl: string | null;
   text: string | null;
   project: string | null;

@@ -2,26 +2,50 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 import XLSX from "xlsx";
+import { classifyRegion, validateRegionAssignments } from "./regionalization.mjs";
 
 const root = process.cwd();
 const args = parseArgs(process.argv.slice(2));
 
-if (!args.corpus || !args.bibliografia) {
-  console.error("Uso: npm run data:import -- --corpus /ruta/corpus.xlsx --bibliografia /ruta/bibliografia.xlsx");
+if (!args.corpus) {
+  console.error("Uso: npm run data:import -- --corpus /ruta/corpus.xlsx [--bibliografia /ruta/bibliografia.xlsx]");
   process.exit(1);
 }
 
 const corpusRows = await readWorksheet(args.corpus, "Corpus_maestro");
-const bibliographyRows = await readWorksheet(args.bibliografia, "Bibliografia_maestra");
+const bibliographyRows = args.bibliografia ? await readWorksheet(args.bibliografia, "Bibliografia_maestra") : null;
+const rawByCode = args.lirica && args.narrativa
+  ? new Map([
+      ...(await readCsv(args.lirica)),
+      ...(await readCsv(args.narrativa)),
+    ].map((row) => [clean(row["Código"]), row]))
+  : new Map();
 
 validateColumns(corpusRows, ["Corpus Id", "Slug", "Titulo", "Macro Tipo", "Obra Texto", "Publicacion Web Sugerida"], "Corpus_maestro");
-validateColumns(bibliographyRows, ["Bib Id", "Slug", "Tipo", "Autor", "Titulo"], "Bibliografia_maestra");
+if (bibliographyRows) validateColumns(bibliographyRows, ["Bib Id", "Slug", "Tipo", "Autor", "Titulo"], "Bibliografia_maestra");
 
-const excludedCorpus = corpusRows.filter((row) => clean(row["Publicacion Web Sugerida"]) === "No publicar automáticamente");
-const publishableCorpus = corpusRows
-  .filter((row) => clean(row["Publicacion Web Sugerida"]) !== "No publicar automáticamente")
-  .map(toCorpusRecord);
-const bibliography = bibliographyRows.map(toBibliographyRecord);
+const regionalizedRows = corpusRows.map((row) => ({
+  id: clean(row["Corpus Id"]),
+  department: clean(rawByCode.get(clean(row["Codigo Original"]))?.Departamento ?? row["Departamento Normalizado"]),
+  locality: clean(rawByCode.get(clean(row["Codigo Original"]))?.["Municipio de recolección"] ?? row["Municipio O Localidad Normalizado"]),
+  regionalization: classifyRegion({
+    department: rawByCode.get(clean(row["Codigo Original"]))?.Departamento ?? row["Departamento Normalizado"],
+    locality: rawByCode.get(clean(row["Codigo Original"]))?.["Municipio de recolección"] ?? row["Municipio O Localidad Normalizado"],
+  }),
+}));
+validateRegionAssignments(regionalizedRows);
+for (const [index, item] of regionalizedRows.entries()) {
+  const recordedRegion = clean(corpusRows[index].Region);
+  if (recordedRegion && recordedRegion !== item.regionalization.region) {
+    throw new Error(`${item.id}: la región registrada (${recordedRegion || "∅"}) no coincide con la regla territorial (${item.regionalization.region})`);
+  }
+}
+
+const excludedCorpus = [];
+const publishableCorpus = corpusRows.map(toCorpusRecord);
+const bibliography = bibliographyRows
+  ? bibliographyRows.map(toBibliographyRecord)
+  : JSON.parse(await fs.readFile(path.join(root, "app", "generated", "bibliography-index.json"), "utf8"));
 
 assertUnique(publishableCorpus, "id", "corpus_id");
 assertUnique(publishableCorpus, "slug", "slug del corpus");
@@ -59,8 +83,49 @@ function parseArgs(values) {
   for (let index = 0; index < values.length; index += 1) {
     if (values[index] === "--corpus") parsed.corpus = values[index + 1];
     if (values[index] === "--bibliografia") parsed.bibliografia = values[index + 1];
+    if (values[index] === "--lirica") parsed.lirica = values[index + 1];
+    if (values[index] === "--narrativa") parsed.narrativa = values[index + 1];
   }
   return parsed;
+}
+
+async function readCsv(filePath) {
+  const input = (await fs.readFile(path.resolve(filePath), "utf8")).replace(/^\uFEFF/, "");
+  const matrix = [];
+  let row = [];
+  let field = "";
+  let quoted = false;
+  for (let index = 0; index < input.length; index += 1) {
+    const character = input[index];
+    if (quoted) {
+      if (character === '"' && input[index + 1] === '"') {
+        field += '"';
+        index += 1;
+      } else if (character === '"') {
+        quoted = false;
+      } else {
+        field += character;
+      }
+    } else if (character === '"') {
+      quoted = true;
+    } else if (character === ",") {
+      row.push(field);
+      field = "";
+    } else if (character === "\n") {
+      row.push(field.replace(/\r$/, ""));
+      matrix.push(row);
+      row = [];
+      field = "";
+    } else {
+      field += character;
+    }
+  }
+  if (field || row.length) {
+    row.push(field.replace(/\r$/, ""));
+    matrix.push(row);
+  }
+  const headers = matrix[0];
+  return matrix.slice(1).filter((values) => values.some((value) => value !== "")).map((values) => Object.fromEntries(headers.map((header, index) => [header, values[index] ?? ""])));
 }
 
 async function readWorksheet(filePath, sheetName) {
@@ -101,8 +166,8 @@ function nullable(value) {
 }
 
 function corpusText(value) {
-  const text = clean(value).replace(/\r\n?/g, "\n").replace(/[ \t]+\n/g, "\n");
-  return text || null;
+  const text = String(value ?? "").replace(/\r\n?/g, "\n");
+  return text.trim() ? text : null;
 }
 
 function slugify(value) {
@@ -147,14 +212,18 @@ function artFor(id, genre, region) {
 
 function toCorpusRecord(row) {
   const id = clean(row["Corpus Id"]);
-  const title = clean(row.Titulo) || "Registro sin título";
-  const macroType = clean(row["Macro Tipo"]) || "Sin clasificación";
+  const raw = rawByCode.get(clean(row["Codigo Original"]));
+  const title = clean(raw?.["TÍTULO"] ?? row.Titulo) || "Registro sin título";
+  const macroType = clean(raw?.["Tipo de obra"] ?? row["Macro Tipo"]) || "Sin clasificación";
   const genre = clean(row["Genero Forma Filtro"]) || "Sin clasificación";
-  const region = clean(row["Macroregion Departamental Provisional"]) || "Sin dato";
-  const department = clean(row["Departamento Normalizado"]) || "Sin dato";
-  const locality = nullable(row["Municipio O Localidad Normalizado"]);
-  const year = nullable(row["Ano Recoleccion"]);
-  const collector = nullable(row.Recolector);
+  const rawDepartment = clean(raw?.Departamento ?? row["Departamento Normalizado"]);
+  const department = rawDepartment || "Sin dato";
+  const locality = nullable(raw?.["Municipio de recolección"] ?? row["Municipio O Localidad Normalizado"]);
+  const regionalization = classifyRegion({ department: rawDepartment, locality });
+  const region = clean(row.Region) || regionalization.region;
+  if (region !== regionalization.region) throw new Error(`${id}: región no reproducible desde la localización`);
+  const year = nullable(raw?.["Año de recolección"] ?? row["Ano Recoleccion"]);
+  const collector = nullable(raw?.["Recolector de la obra"] ?? row.Recolector);
   const sourceAuthor = nullable(row["Fuente Autor"]);
   const sourceTitle = nullable(row["Fuente Titulo"]);
   const sourceYear = nullable(row["Fuente Ano"]);
@@ -173,13 +242,15 @@ function toCorpusRecord(row) {
     macroTypeSlug: slugify(macroType),
     genre,
     genreSlug: knownGenreSlug(genre),
-    genreOriginal: nullable(row["Genero Forma Original"]),
+    genreOriginal: nullable(raw?.["Tipo de obra lírica"] || raw?.["Tipo de obra narrativa"] || row["Genero Forma Original"]),
     year,
     locality,
     department,
     departmentSlug: slugify(department),
     region,
-    regionSlug: slugify(region),
+    regionSlug: regionalization.regionSlug,
+    regionCriterion: clean(row["Criterio Regionalizacion"]) || regionalization.criterion,
+    specialZones: (clean(row["Zonas Especiales Regionales"]) || regionalization.specialZones.join("; ")).split(";").map((value) => value.trim()).filter(Boolean),
     collector,
     sourceType,
     sourceBibId,
@@ -187,16 +258,16 @@ function toCorpusRecord(row) {
     sourceTitle,
     sourceYear,
     sourceUrl: nullable(row["Fuente Url"]),
-    text: corpusText(row["Obra Texto"]),
-    project: nullable(row.Proyecto),
+    text: corpusText(raw?.["LA OBRA"] ?? row["Obra Texto"]),
+    project: nullable(raw?.["Proyecto trabajo de campo"] ?? row.Proyecto),
     metadataStatus: nullable(row["Estado Metadatos"]),
-    rightsStatus: nullable(row["Estado Derechos"]),
-    privacyStatus: nullable(row["Estado Privacidad"]),
-    publicationStatus: nullable(row["Publicacion Web Sugerida"]),
+    rightsStatus: "Publicable: consentimiento o dominio público confirmado por el investigador",
+    privacyStatus: "Apta para publicación según confirmación del investigador",
+    publicationStatus: "Publicar texto y metadatos",
     qualityAlerts: nullable(row["Alertas Calidad"]),
     summary,
     art: artFor(id, genre, region),
-    searchText: normalizeSearch([id, title, macroType, genre, row["Genero Forma Original"], year, locality, department, region, collector, sourceAuthor, sourceTitle, sourceYear, row.Proyecto]),
+    searchText: normalizeSearch([id, title, macroType, genre, row["Genero Forma Original"], year, locality, department, region, regionalization.specialZones.join(" "), collector, sourceAuthor, sourceTitle, sourceYear, row.Proyecto]),
   };
 }
 
@@ -306,7 +377,8 @@ function toCsv(rows, columns) {
 function corpusCsv(rows) {
   return toCsv(rows, [
     ["Corpus ID", "id"], ["Slug", "slug"], ["Título", "title"], ["Macro tipo", "macroType"], ["Género", "genre"],
-    ["Año de recolección", "year"], ["Municipio o localidad", "locality"], ["Departamento", "department"], ["Región provisional", "region"],
+    ["Año de recolección", "year"], ["Municipio o localidad", "locality"], ["Departamento", "department"], ["Región", "region"],
+    ["Criterio de regionalización", "regionCriterion"], ["Zonas especiales regionales", "specialZones"],
     ["Recolector", "collector"], ["Tipo de fuente", "sourceType"], ["Fuente bibliográfica ID", "sourceBibId"], ["Autor de la fuente", "sourceAuthor"],
     ["Título de la fuente", "sourceTitle"], ["Año de la fuente", "sourceYear"], ["URL de la fuente", "sourceUrl"], ["Estado de derechos", "rightsStatus"],
     ["Estado de privacidad", "privacyStatus"], ["Estado de publicación", "publicationStatus"], ["Alertas de calidad", "qualityAlerts"],

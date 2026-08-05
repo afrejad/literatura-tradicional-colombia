@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { interregionalCoverage, regions } from "../catalog";
 import statsJson from "../generated/stats.json";
 import type { CorpusIndexItem, ResearchStats } from "../research-data";
 import type { Paginated } from "../server-search";
@@ -59,7 +60,7 @@ export function ArchiveExplorer({ initial = {}, initialResult }: { initial?: Ini
         <label>Palabra clave<input onChange={(event) => { setQuery(event.target.value); setPage(1); setLoading(true); }} placeholder="Título, lugar, fuente o recolector" type="search" value={query} /></label>
         <label>Macro tipo<select onChange={(event) => { setMacroType(event.target.value); setPage(1); setLoading(true); }} value={macroType}><option value="todos">Narrativa y lírica</option>{stats.corpus.macroTypes.map(item => <option key={item.slug} value={item.slug}>{item.value} ({item.count})</option>)}</select></label>
         <label>Género o forma<select onChange={(event) => { setGenre(event.target.value); setPage(1); setLoading(true); }} value={genre}><option value="todos">Todos los géneros</option>{stats.corpus.genres.map(item => <option key={item.slug} value={item.slug}>{item.value} ({item.count})</option>)}</select></label>
-        <label>Región provisional<select onChange={(event) => { setRegion(event.target.value); setPage(1); setLoading(true); }} value={region}><option value="todas">Todas las regiones</option>{stats.corpus.regions.map(item => <option key={item.slug} value={item.slug}>{item.value} ({item.count})</option>)}</select></label>
+        <label>Región del corpus<select onChange={(event) => { setRegion(event.target.value); setPage(1); setLoading(true); }} value={region}><option value="todas">Todas las regiones</option>{regions.map(item => <option key={item.slug} value={item.slug}>{item.name} ({item.count})</option>)}{interregionalCoverage.count > 0 && <optgroup label="Cobertura no asignable a una sola región"><option value={interregionalCoverage.slug}>{interregionalCoverage.name} ({interregionalCoverage.count})</option></optgroup>}</select></label>
         <label>Departamento<select onChange={(event) => { setDepartment(event.target.value); setPage(1); setLoading(true); }} value={department}><option value="todos">Todos los departamentos</option>{stats.corpus.departments.map(item => <option key={item.slug} value={item.slug}>{item.value} ({item.count})</option>)}</select></label>
         <div className="filter-note"><strong>Corpus con texto</strong><p>Se muestran {stats.corpus.publishedMetadata.toLocaleString("es-CO")} fichas documentales y {stats.corpus.publishedTexts.toLocaleString("es-CO")} transcripciones consultables, enlazadas con sus datos de procedencia.</p></div>
       </aside>

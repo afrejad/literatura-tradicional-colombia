@@ -25,10 +25,12 @@ El importador publica en cada ficha el contenido de la columna `Obra Texto`, con
    - `Genero Forma Filtro` y `Genero Forma Original`.
    - `Titulo`.
    - `Ano Recoleccion`, cuando se conozca.
-   - Localidad, departamento y región provisional.
+   - Localidad, departamento y `Region`.
    - Recolector y datos de la fuente.
    - `Estado Metadatos`, `Estado Derechos` y `Estado Privacidad`.
    - `Publicacion Web Sugerida`.
+
+La columna `Region` no debe diligenciarse mediante categorías geográficas convencionales. El proyecto utiliza exclusivamente las nueve regiones del sistema elaborado por Adrián Farid Freja de la Hoz en su investigación doctoral: Caribe, Pacífico, Cafetera, Cordillera Oriental, Tolima Grande, Llanos Orientales, Amazonía, Caucana-Valluna y Nudo de los Pastos. La hoja `Regionalizacion` documenta los departamentos dominantes, los fragmentos departamentales, las zonas especiales y las áreas aproximadas. `Varias regiones` conserva la cobertura interregional de las fuentes que no permiten seleccionar una sola región; no es una décima región.
 
 5. Escriba el texto completo en `Obra Texto`. Esa columna alimenta la transcripción visible en la ficha web; deje la celda vacía si una pieza nueva aún no tiene transcripción publicable.
 6. Guarde el archivo sin cambiar el nombre de la hoja ni de las columnas.
@@ -58,8 +60,12 @@ Abra el proyecto en VS Code y, en el menú **Terminal → Nueva terminal**, ejec
 ```bash
 npm run data:import -- \
   --corpus '/ruta/Corpus_Literatura_Tradicional_Colombia_Depurado.xlsx' \
-  --bibliografia '/ruta/Bibliografia_Literatura_Tradicional_Colombia_Depurada.xlsx'
+  --bibliografia '/ruta/Bibliografia_Literatura_Tradicional_Colombia_Depurada.xlsx' \
+  --lirica '/ruta/Corpus Lírica Tradicional Página WEB - Sheet1.csv' \
+  --narrativa '/ruta/Corpus Narrativa Tradicional Página WEB - Sheet1.csv'
 ```
+
+Los dos CSV originales permiten que el importador recupere literalmente título, texto, año, lugar, departamento, clasificación original y recolector. De este modo, la normalización técnica y la regionalización nunca sobrescriben la información recibida. Si no está actualizando la bibliografía, puede omitir `--bibliografia`; el importador conservará el índice bibliográfico existente.
 
 En Ubuntu puede arrastrar cada archivo desde el explorador hacia la terminal para insertar su ruta. Mantenga las comillas simples cuando la ruta tenga espacios.
 
@@ -68,7 +74,7 @@ La respuesta correcta debe mostrar cinco cifras:
 - registros originales del corpus;
 - metadatos publicados;
 - registros excluidos por revisión;
-- textos publicados; con la base actual debe indicar `2899`;
+- textos publicados; con la base actual debe indicar `2924`;
 - referencias bibliográficas.
 
 Si hay identificadores o slugs repetidos, columnas cambiadas o una hoja mal nombrada, la importación se detendrá y explicará el problema. No edite manualmente los archivos dentro de `app/generated`.

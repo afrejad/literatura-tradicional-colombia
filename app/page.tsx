@@ -37,9 +37,9 @@ export default function Home() {
           <div className="coordinate coordinate-top">78°O · 75°O · 72°O · 69°O</div>
           <div className="coordinate coordinate-side">12°N<br />8°N<br />4°N<br />0°</div>
           <div className="map-cards" aria-hidden="true">
-            <div className="map-card map-card-region map-card-one"><small>Región</small><strong>Pacífico</strong></div>
+            <div className="map-card map-card-region map-card-one"><small>Región</small><strong>Caribe</strong></div>
             <div className="map-card map-card-genre map-card-two"><small>Género</small><strong>Leyendas</strong></div>
-            <div className="map-card map-card-region map-card-three"><small>Región</small><strong>Andes</strong></div>
+            <div className="map-card map-card-region map-card-three"><small>Región</small><strong>Cordillera Oriental</strong></div>
             <div className="map-card map-card-genre map-card-four"><small>Género</small><strong>Coplas y décimas</strong></div>
           </div>
         </div>
@@ -68,7 +68,7 @@ export default function Home() {
       <section className="section region-section" aria-labelledby="regions-title">
         <div className="section-heading"><div><span className="eyebrow"><i /> Atlas de voces</span><h2 id="regions-title">Recorrer por territorios</h2></div><p>Cada región reúne repertorios, prácticas de transmisión y maneras particulares de imaginar el mundo.</p></div>
         <div className="region-grid">
-          {regions.map((region, index) => <Link className="region-tile" href={`/explorar?region=${region.slug}`} key={region.slug}><span className="region-number">0{index + 1}</span><div><h3>{region.name}</h3><p>{region.note}</p><small>{region.count.toLocaleString("es-CO")} registros</small></div><span className="region-arrow" aria-hidden="true">↗</span></Link>)}
+          {regions.map((region, index) => <Link className="region-tile" href={`/explorar?region=${region.slug}`} key={region.slug}><span className="region-number">{String(index + 1).padStart(2, "0")}</span><div><h3>{region.name}</h3><p>{region.note}</p><small>{region.count ? `${region.count.toLocaleString("es-CO")} registros` : "Sin registros localizados en esta versión"}</small></div><span className="region-arrow" aria-hidden="true">↗</span></Link>)}
         </div>
       </section>
 
